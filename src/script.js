@@ -1,6 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
 // Debug
@@ -13,24 +13,39 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 // Objects
-const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
+const geometry = new THREE.PlaneBufferGeometry(3 , 3, 64, 64)
+
 
 // Materials
+const material = new THREE.MeshStandardMaterial({
+    color:'gray'
+})
 
-const material = new THREE.MeshBasicMaterial()
-material.color = new THREE.Color(0xff0000)
+const plane = new THREE.Mesh(geometry, material)
+scene.add(plane)
+plane.rotation.x = 181
+
+gui.add(plane.rotation, 'x').min(0).max(600)
 
 // Mesh
-const sphere = new THREE.Mesh(geometry,material)
-scene.add(sphere)
+
 
 // Lights
 
-const pointLight = new THREE.PointLight(0xffffff, 0.1)
+const pointLight = new THREE.PointLight(0xffffff, 2)
 pointLight.position.x = 2
 pointLight.position.y = 3
 pointLight.position.z = 4
 scene.add(pointLight)
+
+gui.add(pointLight.position, 'x')
+gui.add(pointLight.position, 'y')
+gui.add(pointLight.position, 'z')
+
+const col = { color: '#00ff00'}
+gui.addColor(col, 'color').onChange(() =>{
+    pointLight.color.set(col.color)
+})
 
 /**
  * Sizes
@@ -62,7 +77,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
-camera.position.z = 2
+camera.position.z = 3
 scene.add(camera)
 
 // Controls
@@ -90,7 +105,7 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    sphere.rotation.y = .5 * elapsedTime
+    // sphere.rotation.y = .5 * elapsedTime
 
     // Update Orbital Controls
     // controls.update()
